@@ -95,15 +95,17 @@ const handleSubmit = (e) => {
             </form>
           </div>
         </div>
-        <div>
+
+        {/* All blogs are present here */}
+        <div className="flex flex-col items-center ">
           <h2 className="text-3xl font-bold mb-8 text-gray-200 text-center">
             Recent Blogs
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-4 ">
             {blogs.map((blog) => (
               <div
                 key={blog.id}
-                className="max-w-xl w-sm rounded-lg shadow-md overflow-hidden flex flex-col border "
+                className="max-w-xl w-sm rounded-lg max-h-fit shadow-md  overflow-hidden flex flex-col "
               >
                 <Card title={blog.title} content={blog.content} />
               </div>
