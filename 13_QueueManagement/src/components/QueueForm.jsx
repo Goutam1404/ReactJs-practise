@@ -30,7 +30,7 @@ const QueueForm = ({ onAdd }) => {
             className="w-full p-3 placeholder:text-gray-400 bg-gray-900 appearance-none rounded-md focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500"
           />
         </div>
-        <div className="relative bg-gray-900 pr-2  rounded-md ">
+        <div className=" bg-gray-900 pr-2  rounded-md ">
           <select
             value={service}
             onChange={(e) => setService(e.target.value)}

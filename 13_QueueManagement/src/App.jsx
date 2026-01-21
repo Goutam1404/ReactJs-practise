@@ -13,9 +13,9 @@ const App = () => {
   const updateStatus = (id, newStatus) => {
     //updating the status
     setQueue(
-      queue.map((customer) => {
-        customer.id === id ? { ...customer, status: newStatus } : customer;
-      })
+      queue.map((customer) =>
+        customer.id === id ? { ...customer, status: newStatus } : customer
+      )
     );
   };
 
@@ -36,12 +36,16 @@ const App = () => {
             </p>
           </div>
         </header>
-        <main className="m-5 grid grid-rows-2 md:grid-cols-3 gap-8 duration-200 transition-all">
+        <main className=" m-10 md:mx-15 h-max grid grid-rows-2 md:grid-cols-3 gap-10 duration-200 transition-all">
           <div className="max-w-full sm:w-xl md:col-span-1">
             <QueueForm onAdd={addToQueue} />
           </div>
-          <div className="max-w-full sm:w-xl md:col-span-2">
-            <Display queue={queue} onUpdate={updateStatus} onRemove={removeFromQueue}/>
+          <div className="max-w-full md:col-span-2">
+            <Display
+              queue={queue}
+              onUpdate={updateStatus}
+              onRemove={removeFromQueue}
+            />
           </div>
         </main>
       </div>
