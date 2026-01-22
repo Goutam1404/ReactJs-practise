@@ -36,7 +36,7 @@ const App = () => {
   };
 
   //unit here is referred as each blog in blogs array to prevent misunderstanding
-  const updateTOBlog = (id, blog) => {
+  const updateToBlog = (id, blog) => {
     setBlogs(
       blogs.map((unit) =>
         unit.id === id
@@ -54,31 +54,20 @@ const App = () => {
       <h2 className="w-full mt-5 text-2xl text-center font-serif bg-neutral-800 p-2 my-2 shadow-sm hover:shadow-xl border-none transition-all duration-300">
         Welcome to the blogs
       </h2>
-      <div className="m-10 md:mx-15 h-max grid grid-rows-2 md:grid-cols-3 md:gap-10 duration-200 transition-all text-amber-50">
-        <div>
-          {/* Blog input form */}
-          <div className="bg-gray-800 max-w-full sm:w-xl md:col-span-1 md:mt-15 rounded-xl border border-gray-500">
-            <BlogInput onAdd={addToBlog} />
-          </div>
+      <div className="m-10 md:mx-15 h-max grid grid-cols-1 md:grid-cols-3 gap-10 duration-200 transition-all">
+        {/* Blog input form */}
+        <div className="max-w-full max-h-fit sm:w-xl md:mt-15 md:col-span-1 rounded-xl border border-gray-500">
+          <BlogInput onAdd={addToBlog} />
         </div>
 
         {/* All blogs are present here */}
-        <div className="max-w-full md:col-span-2 m-0">
-          <div className="flex flex-col">
-            <h2 className="text-3xl font-bold text-gray-200 text-center">
-              Recent Blogs
-            </h2>
-            <div className=" w-full mt-5">
-              {blogs.map((blog) => (
-                <div
-                  key={blog.id}
-                  className="max-w-full rounded-lg  shadow-md  overflow-hidden flex flex-col mb-2"
-                >
-                  <Card title={blog.title} content={blog.content} />
-                </div>
-              ))}
-            </div>
-          </div>
+
+        <div className="w-full md:col-span-2">
+          <Card
+            blogs={blogs}
+            onUpdate={updateToBlog}
+            onRemove={removeFromBlog}
+          />
         </div>
       </div>
     </>

@@ -36,7 +36,7 @@ const App = () => {
             </p>
           </div>
         </header>
-        <main className=" m-10 md:mx-15 h-max grid grid-rows-2 md:grid-cols-3 gap-10 duration-200 transition-all">
+        <main className=" m-10 md:mx-15 h-max grid md:grid-cols-3 gap-10 duration-200 transition-all">
           <div className="max-w-full sm:w-xl md:col-span-1">
             <QueueForm onAdd={addToQueue} />
           </div>
