@@ -22,7 +22,7 @@ function Navigation(){
             {sections.map((section) => (
               <button
                 key={section.id}
-                className={`px-4 py-2 bg-gray-600 rounded-lg mr-2 text-white font-medium transition-all hover:bg-gray-900`}
+                className={`px-4 py-2 bg-gray-600 rounded-lg mr-2 text-white font-medium transition-all hover:bg-gray-900 cursor-pointer duration-200`}
               >
                 <span className="mr-2">{section.icon}</span>
                 {section.label}
