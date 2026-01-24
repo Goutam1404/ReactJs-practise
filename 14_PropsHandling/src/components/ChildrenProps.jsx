@@ -79,7 +79,7 @@ export const ChildrenProps = () => {
                 <button className="bg-blue-950 hover:bg-indigo-900 text-white py-2 rounded transition-all duration-300 cursor-pointer">
                   Create New
                 </button>
-                <button className="bg-gray-800 hover:bg-neutral-600 cursor-pointer text-white py-2 rounded cursor-pointer transition-all duration-300">
+                <button className="bg-gray-800 hover:bg-neutral-600 text-white py-2 rounded cursor-pointer transition-all duration-300">
                   View All
                 </button>
               </div>
