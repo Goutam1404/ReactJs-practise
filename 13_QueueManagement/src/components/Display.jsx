@@ -23,21 +23,27 @@ const Display = ({ queue, onUpdate , onRemove}) => {
               {queue.map((customer) => (
                 <div
                   key={customer.id}
-                  className="bg-gray-900 h-fit mt-5 max-w-full p-3 flex items-center justify-between"
+                  className="bg-gray-900 h-fit mt-5 max-w-full p-3 flex  justify-between"
                 >
                   <div className="my-2">
-                    <div className="my-2 font-semibold md:text-xl ">
-                      {customer.name.toUpperCase()}
+                    <div className="my-2 font-semibold md:text-xl flex flex-row justify-end w-full gap-4 items-center ">
+                      <span>{customer.name.toUpperCase()}</span>
+
+                      {customer.urgent && (
+                        <div className="bg-lime-300 px-3 py-1 rounded-full border-2 border-white text-neutral-800 text-sm">
+                           URGENT
+                        </div>
+                      )}
                     </div>
                     <p className="my-1">{customer.service}</p>
                     <span style={{ color: getStatusColour(customer.status) }}>
                       {customer.status}
                     </span>
                   </div>
-                  <div className=" flex gap-2">
+                  <div className=" flex gap-2 items-end">
                     {customer.status === "waiting" && (
                       <button
-                        className="my-2 text-gray-200 bg-green-600 px-4 py-3 rounded-xl cursor-pointer hover:bg-green-700 duration-200"
+                        className="my-2 text-gray-200 bg-green-600 px-4 py-2 rounded-xl cursor-pointer hover:bg-green-700 duration-200"
                         onClick={() => onUpdate(customer.id, "serving")}
                       >
                         Serve
@@ -45,16 +51,18 @@ const Display = ({ queue, onUpdate , onRemove}) => {
                     )}
                     {customer.status === "serving" && (
                       <button
-                        className="my-2 text-gray-200 bg-blue-400 px-4 py-3 rounded-xl cursor-pointer hover:bg-blue-600 duratio-200"
+                        className="my-2 text-gray-200 bg-blue-400 px-4 py-3 rounded-xl cursor-pointer hover:bg-blue-600 duration-200"
                         onClick={() => onUpdate(customer.id, "completed")}
                       >
                         Completed
                       </button>
                     )}
                     <button
-                      className="my-2 flex items-center justify-center text-gray-200 bg-red-600 px-3 py-3 rounded-xl cursor-pointer hover:bg-red-700 duration-200"
+                      className="my-2 flex items-center justify-center text-gray-200 bg-red-600 px-3 py-2 rounded-xl cursor-pointer hover:bg-red-700 duration-200"
                       onClick={() => onRemove(customer.id)}
-                    > <MdOutlineDelete/>
+                    >
+                      {" "}
+                      <MdOutlineDelete />
                       Remove
                     </button>
                   </div>

@@ -4,15 +4,17 @@ import { IoIosArrowDropdown } from "react-icons/io";
 const QueueForm = ({ onAdd }) => {
   const [name, setName]=useState('');
   const [service, setService]=useState('');
+  const [urgent, setUrgent]=useState(false);
   const handleSubmit=(e)=>{
       e.preventDefault();
       if(!name.trim() || !service.trim()){
         alert("All the fields are required");
         return ;
       }
-      onAdd({name, service});
+      onAdd({name, service, urgent});
       setName('');
       setService('');
+      setUrgent(false)
   }
   return (
     <>
@@ -30,7 +32,7 @@ const QueueForm = ({ onAdd }) => {
             className="w-full p-3 placeholder:text-gray-400 bg-gray-900 appearance-none rounded-md focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500"
           />
         </div>
-        <div className=" bg-gray-900 pr-2  rounded-md ">
+        <div className=" bg-gray-900 pr-2 mb-4 rounded-md ">
           <select
             value={service}
             onChange={(e) => setService(e.target.value)}
@@ -51,6 +53,19 @@ const QueueForm = ({ onAdd }) => {
             </svg>
           </div> */}
         </div>
+
+        <span
+          className={`${
+            urgent
+              ? "bg-lime-600 hover:bg-lime-700"
+              : " bg-gray-500 hover:bg-gray-600"
+          }  px-3 py-1 rounded-full  transition duration-200 cursor-pointer font-semibold text-gray-200`}
+          
+          onClick={() => setUrgent((prev)=>!prev)}
+        >
+          URGENT
+        </span>
+
         <button
           type="submit"
           className="w-full border-none p-3 flex items-center justify-center gap-1 rounded-xl h-11 text-l font-semibold bg-indigo-800 mt-5 cursor-pointer hover:opacity-90"

@@ -6,8 +6,18 @@ const App = () => {
   const [queue, setQueue] = useState([]);
   const addToQueue = (customer) => {
     //adding data to queue
-    setQueue([...queue, { ...customer, id: Date.now(), status: "waiting" }]);
-    console.log(queue);
+    const newCustomer = {
+      ...customer,
+      id: Date.now(),
+      status: "waiting",
+    };
+    console.log(customer.urgent);
+    setQueue((prev)=>{
+      if(customer.urgent){
+        return [newCustomer, ...prev]
+      }
+      return [...prev, newCustomer]
+    });
   };
 
   const updateStatus = (id, newStatus) => {
@@ -25,10 +35,10 @@ const App = () => {
   };
   return (
     <>
-      <div className="w-full mt-10">
+      <div className="w-full bg-gray-700 py-5">
         <header className="text-center mb-5">
           <div>
-            <h1 className="font-bold text-4xl text-violet-800 hover:text-violet-600 transition-all duration-200 p-2">
+            <h1 className="font-bold text-4xl text-violet-400 hover:text-violet-500 transition-all duration-200 p-2">
               Queue Management Application
             </h1>
             <p className="font-extralight text-xl mt-2">
