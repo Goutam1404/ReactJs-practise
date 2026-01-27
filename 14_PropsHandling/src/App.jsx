@@ -3,7 +3,7 @@ import { BasicProps, ChildrenProps,  ComplexProps, ThemeToggler } from './compon
 import { ThemeProvider, useTheme } from './components/ThemeToggler.jsx'
 
 function Navigation(){
-  const isDark=true
+  const {isDark}=useTheme();
   const sections=[
     {id:'basic', label:'basic props', icon:'📦'},
     {id:'children', label:'children props', icon:'🔗'},

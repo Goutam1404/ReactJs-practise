@@ -1,6 +1,8 @@
 import React from 'react'
 import { MdOutlineDelete } from "react-icons/md";
+import { useTheme } from './ThemeToggler.jsx';
 const Display = ({ queue, onUpdate , onRemove}) => {
+  const { isDark } = useTheme();
   const getStatusColour=(status)=>{
     switch(status){
       case "waiting": return "#E64A27";      
@@ -27,7 +29,7 @@ const Display = ({ queue, onUpdate , onRemove}) => {
                 >
                   <div className="my-2">
                     <div className="my-2 flex flex-row justify-end w-full gap-4 items-center ">
-                      <span className='font-semibold md:text-xl '>{customer.name.toUpperCase()}</span>
+                      <span className='font-semibold md:text-xl '>{customer.name.trim().toUpperCase()}</span>
 
                       {customer.urgent && (
                         <div className="bg-lime-300 px-3 py-1 rounded-full border-2 border-yellow-500 text-neutral-800 text-sm font-medium">

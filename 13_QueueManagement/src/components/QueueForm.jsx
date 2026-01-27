@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 import { FaUserPlus } from "react-icons/fa6";
 import { IoIosArrowDropdown } from "react-icons/io";
+import { useTheme } from './ThemeToggler';
 const QueueForm = ({ onAdd }) => {
+  const { isDark } = useTheme();
   const [name, setName]=useState('');
   const [service, setService]=useState('');
   const [urgent, setUrgent]=useState(false);
