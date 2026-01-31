@@ -6,11 +6,12 @@ const Display = ({ queue, onUpdate , onRemove}) => {
   const getStatusColour=(status)=>{
     switch(status){
       case "waiting": return "#E64A27";      
-      case "serving": return "#47FC42";
-      case "completed": return "#5188FC";
+      case "serving": return "#2e9e35";
+      case "completed": return "#278be6";
       default: return "gray";
     }
   }
+
   return (
     <>
       <div
@@ -21,7 +22,11 @@ const Display = ({ queue, onUpdate , onRemove}) => {
         <h2 className="font-bold mb-2 text-xl md:text-2xl">Current Queue</h2>
         <div>
           {queue.length === 0 ? (
-            <p className="text-center md:text-xl text-gray-500">
+            <p
+              className={`text-center md:text-xl ${
+                isDark ? " text-gray-500" : "  text-gray-400 "
+              } `}
+            >
               No customer data is here
             </p>
           ) : (
@@ -58,13 +63,13 @@ const Display = ({ queue, onUpdate , onRemove}) => {
                     <p
                       className={`my-1 ${
                         isDark ? "font-medium" : "text-gray-800 font-bold"
-                      }`}
+                      } tracking-wide`}
                     >
                       {customer.service}
                     </p>
                     <span
                       style={{ color: getStatusColour(customer.status) }}
-                      className={`${isDark ? "font-medium" : "font-bold"}`}
+                      className={`${isDark ? "font-bold" : "font-extrabold"} `}
                     >
                       {customer.status}
                     </span>
@@ -80,7 +85,7 @@ const Display = ({ queue, onUpdate , onRemove}) => {
                     )}
                     {customer.status === "serving" && (
                       <button
-                        className="my-2 text-gray-200 bg-blue-400 px-4 py-2 rounded-xl cursor-pointer hover:bg-blue-600 duration-200"
+                        className="my-2 text-gray-200 bg-blue-600 px-4 py-2 rounded-xl cursor-pointer hover:bg-blue-700 duration-200"
                         onClick={() => onUpdate(customer.id, "completed")}
                       >
                         Completed
