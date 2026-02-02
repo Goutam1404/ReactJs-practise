@@ -20,8 +20,8 @@ export function useBlog() {
       return savedBlog
         ? JSON.parse(savedBlog).length > 0
           ? JSON.parse(savedBlog)
-          : blogIntro
-        : [];
+          : ''
+        : blogIntro;
     } catch (error) {
       console.error("Error in fetching the blog from local storage");
       return [];

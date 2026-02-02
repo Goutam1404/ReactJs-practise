@@ -6,8 +6,8 @@ const App = () => {
   const { blogs, removeFromBlog, updateToBlog, addToBlog } = useBlog();
   return (
     <>
-      <h2 className="w-full mt-5 text-2xl text-center font-serif bg-neutral-800 p-2 my-2 shadow-sm hover:shadow-xl border-none transition-all duration-300">
-        Welcome to the blogs
+      <h2 className="w-full mt-5 text-2xl sm:text-4xl sm:font-extrabold font-stretch-75% tracking-widest text-center  bg-neutral-800 p-2 sm:p-4 my-2 shadow-md hover:shadow-xl border-none transition-all duration-300">
+        Blogs Store
       </h2>
       <div className="m-10 md:mx-15 h-max grid grid-cols-1 md:grid-cols-3 gap-10 duration-200 transition-all">
         {/* Blog input form */}

@@ -1,31 +1,27 @@
 import React, { useState } from "react";
-
+import { MdOutlineEdit, MdOutlineDeleteOutline } from "react-icons/md";
 const Card = ({ blogs, onUpdate, onRemove }) => {
   // console.log(title+" "+content);
 
- const [modalMode, setModalMode] = useState(null); // 'read', 'edit', or null
- const [selectedBlog, setSelectedBlog] = useState(null);
+  const [modalMode, setModalMode] = useState(null); // 'read', 'edit', or null
+  const [selectedBlog, setSelectedBlog] = useState(null);
 
- const openReadMore = (blog) => {
-   setSelectedBlog(blog);
-   setModalMode("read");
- };
+  const openReadMore = (blog) => {
+    setSelectedBlog(blog);
+    setModalMode("read");
+  };
 
- const openEdit = (blog) => {
-   setSelectedBlog(blog);
-   setModalMode("edit");
- };
-
+  const openEdit = (blog) => {
+    setSelectedBlog(blog);
+    setModalMode("edit");
+  };
 
   return (
     <>
-    
-
       {/*BLOCK FOR BOTH EDITING AND VIEW OPTION BASED ON THE STATE AFTER CLICK */}
       {modalMode && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-4">
           <div className="bg-[#1e293b] w-full max-w-2xl rounded-xl border border-slate-700 shadow-2xl overflow-hidden">
-            
             {/* --- CONTENT AREA --- */}
             <div className="p-4 sm:p-8">
               {modalMode === "read" ? (
@@ -62,7 +58,7 @@ const Card = ({ blogs, onUpdate, onRemove }) => {
             <div className="bg-[#161e2e] p-2 sm:p-4 flex justify-between items-center">
               <button
                 onClick={() => setModalMode(null)}
-                className="text-slate-400 hover:text-white"
+                className="text-slate-400 hover:text-white cursor-pointer"
               >
                 Close
               </button>
@@ -72,17 +68,25 @@ const Card = ({ blogs, onUpdate, onRemove }) => {
                   <>
                     <button
                       onClick={() => setModalMode("edit")}
-                      className="bg-green-600 px-4 py-2 rounded text-white hover:bg-green-700"
+                      className="bg-green-600 px-3 py-2 rounded text-white hover:bg-green-700 cursor-pointer flex items-center gap-1"
                     >
+                      <MdOutlineEdit />
                       Edit
                     </button>
-                    <button className="bg-red-600 px-4 py-2 rounded text-white hover:bg-red-700">
+                    <button
+                      className="bg-red-600 px-3 py-2 rounded text-white hover:bg-red-700 cursor-pointer flex items-center"
+                      onClick={() => {
+                        onRemove(selectedBlog.id);
+                        return setModalMode(null);
+                      }}
+                    >
+                      <MdOutlineDeleteOutline className="text-lg"/>
                       Delete
                     </button>
                   </>
                 ) : (
                   <button
-                    className="bg-blue-600 px-6 py-2 rounded text-white hover:bg-blue-700"
+                    className="bg-blue-600 px-6 py-2 rounded text-white hover:bg-blue-700 cursor-pointer"
                     onClick={(e) => {
                       onUpdate(selectedBlog.id, {
                         title: selectedBlog.title,
@@ -112,7 +116,6 @@ const Card = ({ blogs, onUpdate, onRemove }) => {
         ) : (
           <div className="transition-all sm:m-4 duration-300 ">
             {blogs.map((blog) => (
-              
               <div
                 key={blog.id}
                 className="max-w-full bg-gray-800 rounded-2xl border-gray-500 px-2 py-4 sm:p-4 shadow-md hover:shadow-xl border  overflow-hidden mb-5"
@@ -133,18 +136,18 @@ const Card = ({ blogs, onUpdate, onRemove }) => {
                   >
                     Read more
                   </button>
-                  <div>
+                  <div className="flex">
                     <button
-                      className="mr-2 bg-green-600 text-sm sm:text-lg py-1 px-2 rounded rounded-r-sm hover:bg-green-700 cursor-pointer"
+                      className="mr-2 bg-green-600 text-lg sm:text-2xl py-1 px-2 flex items-center gap-1 sm:gap-2 rounded rounded-r-sm hover:bg-green-700 cursor-pointer"
                       onClick={() => openEdit(blog)}
                     >
-                      EDIT
+                      <MdOutlineEdit />
                     </button>
                     <button
-                      className="bg-red-600 text-sm sm:text-lg py-1 px-2 rounded-l rounded-r-sm hover:bg-red-700 cursor-pointer"
+                      className="bg-red-600 text-lg sm:text-2xl py-1 px-2 flex items-center gap-1 sm:gap-2 rounded-l rounded-r-sm hover:bg-red-700 cursor-pointer"
                       onClick={() => onRemove(blog.id)}
                     >
-                      DELETE
+                      <MdOutlineDeleteOutline />
                     </button>
                   </div>
                 </div>
