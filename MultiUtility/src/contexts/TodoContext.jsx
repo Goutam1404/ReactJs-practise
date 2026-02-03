@@ -5,19 +5,6 @@ import { createContext, useContext } from "react";
 export const TodoContext = createContext();
 
 export const TodoProvider = ({ children }) => {
-  const [todos, setTodos] = useState(() => {
-    try {
-      const savedTodo = JSON.parse(localStorage.getItem("todos"));
-      return savedTodo
-        ? savedTodo.length > 0
-          ? savedTodo
-          : ""
-        : presetTodo;
-    } catch (error) {
-      console.error("Error in fetching todo from storage");
-    }
-  });
-
   const presetTodo = [
     {
       id: 1,
@@ -25,8 +12,28 @@ export const TodoProvider = ({ children }) => {
       completed: false,
     },
   ];
+  
+  const [todos, setTodos] = useState(() => {
+    try {
+      const savedTodo = localStorage.getItem("todos");
+      const parsedTodo=JSON.parse(savedTodo)
+      return parsedTodo
+        ? parsedTodo.length > 0
+          ? parsedTodo
+          : ""
+        : presetTodo;
+    } catch (error) {
+      console.error("Error in fetching todo from storage",error);
+      return []
+    }
+  });
+console.log(todos);
+
+  
 
   useEffect(() => {
+    console.log("In setting todos in local storage",todos);
+    
     try {
       localStorage.setItem("todos", JSON.stringify(todos));
     } catch (error) {
@@ -35,14 +42,17 @@ export const TodoProvider = ({ children }) => {
   }, [todos]);
 
   const addTodo = (todo) => {
+
     const newTodo = { ...todo, id: Date.now(), completed: false };
+    console.log(newTodo);
+    
     setTodos((prev) => [newTodo, ...prev]);
   };
 
   const updateTodo = (todoId, todo) => {
     setTodos((prev) =>
       prev.map((task) =>
-        task.id === todoId ? { ...task, title: todo.title || title } : task
+        task.id === todoId ? { ...task, task: todo } : task
       )
     );
   };
@@ -51,20 +61,20 @@ export const TodoProvider = ({ children }) => {
     setTodos((prev) => prev.filter((task) => task.id !== todoId));
   };
 
-  const toggleComplete = (todoId) => {
+  const toggleCompleted = (todoId) => {
     setTodos((prev) =>
       prev.map((task) =>
         task.id === todoId ? { ...task, completed: !task.completed } : task
       )
     );
   };
-  
+
   const value = {
     todos,
     addTodo,
     updateTodo,
     deleteTodo,
-    toggleComplete,
+    toggleCompleted,
   };
   return <TodoContext.Provider value={value}>{children}</TodoContext.Provider>;
 };

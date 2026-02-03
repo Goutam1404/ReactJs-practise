@@ -1,4 +1,4 @@
-import Input from "./Input.jsx";
+import TodoForm from "./TodoForm.jsx";
 import TodoDisplay from "./TodoDisplay.jsx";
 
-export {Input, TodoDisplay}
+export { TodoForm, TodoDisplay };
