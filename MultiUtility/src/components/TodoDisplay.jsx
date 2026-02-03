@@ -7,12 +7,11 @@ function TodoDisplay({ todo }) {
   const [todoMsg, setTodoMsg] = useState(todo.todo);
 
   const editTodo = () => {
-    updateTodo(todo.id, { ...todo, todo: todoMsg });
+    updateTodo(todo.id, todoMsg);
     setIsTodoEditable(false);
   };
   const toggleStatus = () => {
-    toggleCompleted(todo.id)
-    
+    toggleCompleted(todo.id);
   };
   return (
     <div

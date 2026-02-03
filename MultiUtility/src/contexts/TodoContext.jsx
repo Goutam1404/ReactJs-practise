@@ -52,7 +52,7 @@ console.log(todos);
   const updateTodo = (todoId, todo) => {
     setTodos((prev) =>
       prev.map((task) =>
-        task.id === todoId ? { ...task, task: todo } : task
+        task.id === todoId ? { ...task, todo } : task
       )
     );
   };
