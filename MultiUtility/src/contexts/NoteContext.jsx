@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 const NoteContext = createContext();
 
@@ -57,4 +57,4 @@ export const NoteProvider = ({ children }) => {
   return <NoteContext.Provider value={value}>{children}</NoteContext.Provider>;
 };
 
-export const useNote = () => useContext(createContext);
+export const useNote = () => useContext(NoteContext);

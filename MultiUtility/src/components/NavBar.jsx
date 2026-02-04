@@ -5,7 +5,7 @@ function NavBar() {
   const isDark = true;
   const sections = [
     { id: "todo", label: "ToDo", icon: "✅" },
-    { id: "Notes", label: "Notes", icon: "📃" },
+    { id: "notes", label: "Notes", icon: "📃" },
     { id: "clock", label: "Clock", icon: "🕐" },
   ];
 
@@ -24,7 +24,7 @@ function NavBar() {
           <div>
             <Link
               to="#"
-              className=" px-4 py-2 bg-gray-600 rounded-lg mr-2 text-white font-medium transition-all hover:bg-gray-900 cursor-pointer duration-200"
+              className=" px-4 py-2 bg-gray-800 rounded-lg mr-2 text-white font-medium transition-all hover:bg-gray-900 cursor-pointer duration-200"
             >
               MultiUtility
             </Link>
@@ -37,8 +37,8 @@ function NavBar() {
                 key={section.id}
                 to={section.id}
                 className={({ isActive }) =>
-                  `px-4 py-2 bg-gray-600 rounded-lg mr-2 text-gray-200 font-medium transition-all lg:hover:bg-gray-900 hover:text-orange-300 ${
-                    isActive ? "text-orange-300 bg-transparent border-gray-700 border" : "text-gray-200 "
+                  `px-4 py-2 bg-gray-700 rounded-lg mr-2 text-gray-200 font-medium transition-all lg:hover:bg-gray-900 hover:text-orange-300 ${
+                    isActive ? "text-orange-300 bg-gray-900" : " text-gray-200 "
                   } cursor-pointer duration-200`
                 }
               >
@@ -49,21 +49,21 @@ function NavBar() {
           </div>
           <div>
             <button
-              className="px-4 py-2 bg-gray-600 rounded-lg mr-2 text-white font-medium transition-all hover:bg-gray-900 cursor-pointer duration-200"
+              className="px-5 py-1 bg-gray-700 rounded-lg mr-2 text-white font-medium transition-all hover:bg-gray-900 cursor-pointer duration-200"
               onClick={handleAlert}
             >
               {isDark ? "☀" : "🌙"}
             </button>
             <Link
               to="#"
-              className="px-4 py-2 bg-gray-600 rounded-lg mr-2 text-white font-medium transition-all hover:bg-gray-900 cursor-pointer duration-200"
+              className="px-4 py-2 bg-gray-700 rounded-lg mr-2 text-white font-medium transition-all hover:bg-gray-900 cursor-pointer duration-200"
               onClick={handleAlert}
             >
               Login
             </Link>
             <Link
               to="#"
-              className="px-4 py-2 bg-gray-600 rounded-lg mr-2 text-white font-medium transition-all hover:bg-gray-900 cursor-pointer duration-200"
+              className="px-4 py-2 bg-gray-700 rounded-lg mr-2 text-white font-medium transition-all hover:bg-gray-900 cursor-pointer duration-200"
               onClick={handleAlert}
             >
               Sign Up
