@@ -29,8 +29,6 @@ export const TodoProvider = ({ children }) => {
   });
 console.log(todos);
 
-  
-
   useEffect(() => {
     console.log("In setting todos in local storage",todos);
     

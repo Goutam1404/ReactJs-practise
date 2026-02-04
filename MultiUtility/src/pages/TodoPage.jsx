@@ -4,11 +4,14 @@ import TodoForm from '../components/TodoForm';
 import TodoDisplay from '../components/TodoDisplay';
 
 function TodoPage() {
+  const theme=true //later will be taken from theme context
    const { todos } = useTodo();
    console.log("Context Value:", todos);
    return (
-     <div className="bg-[#172842] min-h-screen py-8">
-       <div className="w-full max-w-2xl mx-auto shadow-md rounded-;g px-4 py-3 text-white">
+     <div
+       className={` min-h-screen py-8`}
+     >
+       <div className="w-full max-w-2xl mx-auto shadow-md rounded-lg px-4 py-3 ">
          <h1 className="text-2xl font-bold text-center mb-8 mt-2">
            Manage Your Todos
          </h1>
