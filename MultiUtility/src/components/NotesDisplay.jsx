@@ -1,19 +1,95 @@
-import React from 'react'
-import { useNote } from '../contexts/NoteContext'
+import React, { useState } from "react";
+import { useNote } from "../contexts/NoteContext";
 
-function NotesDisplay({notes}) {
-    const {updateNote, deleteNote} =useNote();
+function NotesDisplay({ notes }) {
+  const { updateNote, deleteNote } = useNote();
+  const [selectedNote, setSelectedNote] = useState(null);
+  const [modalMode, setModalMode] = useState(null);
+
+  console.log("Notes: " + notes.id + ": " + notes.title);
 
   return (
-    <div className='w-full max-w-2xl mx-auto shadow-md '>
-        <div>
-            <h2 className='font-bold text-2xl '>{notes.title}</h2>
+    <>
+      {modalMode && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-4">
+          <div className="bg-[#1e293b] w-full max-w-2xl rounded-xl border border-slate-700 shadow-2xl overflow-hidden">
+            <div className="p-4">
+              {modalMode === "read" ? (
+                <>
+                  <div className="max-h-[80vh] overflow-y-auto">
+                    <h1 className="text-3xl font-bold text-white mb-4">
+                      {selectedNote.title}
+                    </h1>
+                    <p className="text-slate-300 leading-relaxed whitespace-pre-wrap">
+                      {selectedNote.content}
+                    </p>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <h2 className="text-xl font-bold text-white mb-4">
+                    Edit Blog
+                  </h2>
+                  <input
+                    className="w-full bg-[#0f172a] text-white p-3 rounded mb-4"
+                    defaultValue={selectedNote.title}
+                    onChange={(e) => (selectedNote.title = e.target.value)}
+                  />
+                  <textarea
+                    className="w-full bg-[#0f172a] text-white p-3 rounded h-48"
+                    defaultValue={selectedNote.content}
+                    onChange={(e) => (selectedNote.content = e.target.value)}
+                  />
+                </>
+              )}
+            </div>
+          </div>
         </div>
+      )}
+
+      {/* Normal display of cards with notes */}
+      <div className="mx-auto px-2 sm:px-4 py-2 sm:py-2 shadow-md rounded-md bg-amber-400 ">
         <div>
-            <p>{notes.content}</p>
+          <h2 className="font-bold text-2xl sm:my-1 line-clamp-1 sm:line-clamp-none">
+            {notes.title}
+          </h2>
+          <div className=" py-2">
+            <p className="line-clamp-2 sm:line-clamp-3 max-w-2xl mb-2">
+              {notes.content}
+            </p>
+            <div className="flex sm:flex-row justify-between items-center pt-2  sm:pt-4">
+              <span
+                onClick={() => {
+                  setSelectedNote(notes);
+                  setModalMode("read");
+                }}
+                className="cursor-pointer hover:underline-offset-1 "
+              >
+                Read More
+              </span>
+              <div className="flex flex-wrap gap-2 sm:gap-3">
+                <button
+                  className="rounded bg-green-700 hover:bg-green-800 cursor-pointer px-2 sm:px-3 py-1 duration-200"
+                  onClick={() => {
+                    setSelectedNote(notes);
+                    setModalMode("edit");
+                  }}
+                >
+                  Edit
+                </button>
+                <button
+                  className="rounded bg-red-700 hover:bg-red-800 cursor-pointer px-2 sm:px-3 py-1"
+                  onClick={() => deleteNote(notes.id)}
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-    </div>
-  )
+      </div>
+    </>
+  );
 }
 
-export default NotesDisplay
+export default NotesDisplay;
