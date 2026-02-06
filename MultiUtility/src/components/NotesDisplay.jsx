@@ -43,6 +43,47 @@ function NotesDisplay({ notes }) {
                 </>
               )}
             </div>
+
+            {/* FOOTER BUTTONS FOR MODAL */}
+            <div className="flex justify-between mx-5 mb-4">
+              <button
+                onClick={() => setModalMode(null)}
+                className="text-slate-400 hover:text-white cursor-pointer"
+              >
+                close
+              </button>
+              {modalMode === "read" ? (
+                <div>
+                  <div className="flex gap-3">
+                    <button
+                      className="bg-green-600 px-3 py-2 rounded-md hover:bg-green-700 cursor-pointer"
+                      onClick={() => {
+                        setSelectedNote(selectedNote);
+                        setModalMode("edit");
+                      }}
+                    >
+                      Edit{" "}
+                    </button>
+                    <button
+                      className="bg-red-600 px-3 py-2 rounded-md hover:bg-red-700"
+                      onClick={() => {
+                        deleteNote(selectedNote.id);
+                        setModalMode(null);
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  className="bg-blue-600 hover:bg-blue-700 px-3 py-2 rounded-md cursor-pointer"
+                  onClick={() => setModalMode(null)}
+                >
+                  Save Changes
+                </button>
+              )}
+            </div>
           </div>
         </div>
       )}
@@ -50,7 +91,7 @@ function NotesDisplay({ notes }) {
       {/* Normal display of cards with notes */}
       <div className="mx-auto px-2 sm:px-4 py-2 sm:py-2 shadow-md rounded-md bg-amber-400 ">
         <div>
-          <h2 className="font-bold text-2xl sm:my-1 line-clamp-1 sm:line-clamp-none">
+          <h2 className="font-bold text-xl sm:text-2xl sm:my-1 line-clamp-1 sm:line-clamp-none">
             {notes.title}
           </h2>
           <div className=" py-2">
