@@ -88,7 +88,7 @@ function ClockPage() {
          </div>
        )}
 
-       <div className="space-x-4 mb-6">
+       <div className="space-x-4 mb-6 ">
          <button
            onClick={() => setRunning(!running)}
            className="px-6 py-3 bg-green-600 text-white font-semibold rounded-full hover:bg-green-700 transition transform hover:scale-105 shadow-lg"

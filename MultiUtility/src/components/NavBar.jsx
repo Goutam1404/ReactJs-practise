@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 
 function NavBar() {
   const isDark = true;
+  const [isOpen, setIsOpen] = useState(true);
   const sections = [
     { id: "todo", label: "ToDo", icon: "✅" },
     { id: "notes", label: "Notes", icon: "📃" },
@@ -29,8 +30,9 @@ function NavBar() {
               MultiUtility
             </Link>
           </div>
+          {/* mid links */}
           <div
-            className={`flex flex-wrap gap-2 max-w-screen justify-center items-center mx-auto `}
+            className={`hidden md:flex flex-wrap gap-2 max-w-screen justify-center items-center mx-auto `}
           >
             {sections.map((section) => (
               <NavLink
@@ -47,7 +49,8 @@ function NavBar() {
               </NavLink>
             ))}
           </div>
-          <div>
+          {/* buttons */}
+          <div className="hidden md:flex">
             <button
               className="px-5 py-1 bg-gray-700 rounded-lg mr-2 text-white font-medium transition-all hover:bg-gray-900 cursor-pointer duration-200"
               onClick={handleAlert}
@@ -56,7 +59,7 @@ function NavBar() {
             </button>
             <Link
               to="#"
-              className="px-4 py-2 bg-gray-700 rounded-lg mr-2 text-white font-medium transition-all hover:bg-gray-900 cursor-pointer duration-200"
+              className="flex-1 py-3 text-center bg-blue-600 rounded-lg mr-2 text-white font-medium transition-all hover:bg-gray-900 cursor-pointer duration-200"
               onClick={handleAlert}
             >
               Login
@@ -68,6 +71,82 @@ function NavBar() {
             >
               Sign Up
             </Link>
+          </div>
+
+          {/* HAMBURGER BUTTON - Only visible on mobile */}
+          <button
+            className="md:hidden p-2 text-2xl focus:outline-none"
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            {/* Dynamic Hamburger Icon */}
+            <div className="space-y-1.5">
+              <span
+                className={`block w-6 h-0.5 bg-gray-600 transition-transform ${
+                  isOpen ? "rotate-45 translate-y-2" : ""
+                }`}
+              ></span>
+              <span
+                className={`block w-6 h-0.5 bg-gray-600 transition-opacity ${
+                  isOpen ? "opacity-0" : ""
+                }`}
+              ></span>
+              <span
+                className={`block w-6 h-0.5 bg-gray-600 transition-transform ${
+                  isOpen ? "-rotate-45 -translate-y-2" : ""
+                }`}
+              ></span>
+            </div>
+          </button>
+        </div>
+
+        {/* MOBILE MENU - Conditional Rendering */}
+        <div
+          className={`absolute max-w-md border-b md:hidden top-full left-0 w-full z-40 
+      transition-all duration-300 ease-in-out bg-black/60 backdrop-blur-md ${
+        isOpen
+          ? "translate-y-0 opacity-100 visible"
+          : "-translate-y-4 opacity-0 invisible"
+      } ${
+            isDark ? "bg-[#0d1624] border-gray-800" : "bg-white border-gray-100"
+          }`}
+        >
+          <div className={`px-4 pt-2 pb-6 flex flex-col gap-4 border-t ${
+              isDark ? "border-gray-800" : "border-gray-100"
+            }`}>
+            {sections.map((section) => (
+              <NavLink
+                key={section.id}
+                to={section.id}
+                onClick={() => setIsOpen(false)} // Close menu on click
+                className="flex items-center px-4 py-3 rounded-lg bg-gray-800 text-gray-200"
+              >
+                <span className="mr-4 text-xl">{section.icon}</span>
+                {section.label}
+              </NavLink>
+            ))}
+
+            <div className="flex flex-col gap-2 pt-4 border-t border-gray-700">
+              <button
+                onClick={handleAlert}
+                className="w-full py-3 bg-gray-700 rounded-lg text-white"
+              >
+                Toggle Theme {isDark ? "☀" : "🌙"}
+              </button>
+              <div className="flex gap-2">
+                <Link
+                  to="#"
+                  className="flex-1 py-3 text-center bg-blue-600 rounded-lg text-white"
+                >
+                  Login
+                </Link>
+                <Link
+                  to="#"
+                  className="flex-1 py-3 text-center bg-gray-700 rounded-lg text-white"
+                >
+                  Sign Up
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </nav>
