@@ -23,7 +23,7 @@ function NavBar() {
         <div className="container mx-auto px-2 py-4 flex flex-wrap gap-2  justify-between items-center">
           <div>
             <Link
-              to="#"
+              to=""
               className=" px-4 py-2 bg-gray-800 rounded-lg mr-2 text-white font-medium transition-all hover:bg-gray-900 cursor-pointer duration-200"
             >
               MultiUtility

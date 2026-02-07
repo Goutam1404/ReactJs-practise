@@ -8,10 +8,8 @@ function TodoPage() {
    const { todos } = useTodo();
    console.log("Context Value:", todos);
    return (
-     <div
-       className={` min-h-screen py-8 bg-amber-200`}
-     >
-       <div className="w-full max-w-2xl mx-auto shadow-md rounded-lg px-4 py-3 bg-amber-700">
+     <div className={` min-h-screen py-8`}>
+       <div className="w-full max-w-2xl mx-auto shadow-md rounded-lg px-4 py-3 bg-[#030b16]">
          <h1 className="text-2xl font-bold text-center mb-8 mt-2">
            Manage Your Todos
          </h1>

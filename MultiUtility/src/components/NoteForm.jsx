@@ -25,7 +25,7 @@ function NoteForm() {
 
   return (
     <>
-      <form onSubmit={handleSubmit} className="p-5 rounded-xl bg-gray-800 ">
+      <form onSubmit={handleSubmit} className="p-5 rounded-xl bg-[#071324] ">
         <h2 className="mt-0 mb-4 sm:mb-5 text-xl sm:text-2xl font-bold text-gray-300">
           Create a New Note
         </h2>

@@ -5,7 +5,9 @@ import { useNote } from "../contexts/NoteContext.jsx";
 function NotePage() {
   const{notes}= useNote()
   return (
-    <div className={` min-h-screen py-8 bg-amber-900 px-2 sm:px-5`}>
+    <div
+      className={` min-h-screen py-8  px-2 sm:px-5`}
+    >
       <h1 className="text-2xl font-bold text-center mb-8 mt-2">
         Manage Your Notes
       </h1>

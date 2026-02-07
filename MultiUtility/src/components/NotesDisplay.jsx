@@ -89,9 +89,9 @@ function NotesDisplay({ notes }) {
       )}
 
       {/* Normal display of cards with notes */}
-      <div className="mx-auto px-2 sm:px-4 py-2 sm:py-2 shadow-md rounded-md bg-amber-400 ">
+      <div className="mx-auto px-2 sm:px-4 py-2 sm:py-2 rounded-md bg-[#030b16] shadow-xl ">
         <div>
-          <h2 className="font-bold text-xl sm:text-2xl sm:my-1 line-clamp-1 sm:line-clamp-none">
+          <h2 className="font-bold text-xl sm:text-2xl sm:my-1 line-clamp-1 sm:line-clamp-none sm:mb-2">
             {notes.title}
           </h2>
           <div className=" py-2">
