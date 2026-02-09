@@ -46,7 +46,7 @@ function ClockPage() {
 
    return (
      <div
-       className={`min-h-screen flex flex-col items-center justify-center px-6 text-center transition-all duration-500 `}
+       className={`mt-20 flex flex-col items-center justify-center text-center transition-all duration-500 `}
      >
        <h1 className="text-5xl md:text-6xl font-extrabold mb-6 bg-clip-text text-transparent bg-linear-to-r from-blue-400 to-teal-300 drop-shadow-lg">
          {mode === "timer" ? "Countdown Timer" : "Stopwatch"}
@@ -87,11 +87,24 @@ function ClockPage() {
            />
          </div>
        )}
-
-       <div className="space-x-4 mb-6 ">
+       {mode === "timer" && (
          <button
-           onClick={() => setRunning(!running)}
-           className="px-6 py-3 bg-green-600 text-white font-semibold rounded-full hover:bg-green-700 transition transform hover:scale-105 shadow-lg"
+           onClick={handleSetTimer}
+           className="px-8 py-3 bg-blue-600 text-white font-semibold rounded-full hover:bg-blue-700 transition transform hover:scale-105 shadow-lg"
+         >
+           Set Timer
+         </button>
+       )}
+       <div className=" space-x-1.5 sm:space-x-4 mt-5 ">
+         <button
+           onClick={() => {
+             setRunning(!running);
+           }}
+           className={`px-6 py-3  text-white font-semibold rounded-full  ${
+             running
+               ? "bg-green-800 hover:bg-green-900 scale-100"
+               : "bg-green-600 hover:bg-green-700 hover:scale-105"
+           } transition transform  shadow-lg`}
          >
            {running ? "Pause" : "Start"}
          </button>
@@ -105,21 +118,18 @@ function ClockPage() {
            Reset
          </button>
          <button
-           onClick={() => setMode(mode === "timer" ? "stopwatch" : "timer")}
-           className="px-6 py-3 bg-gray-700 text-white font-semibold rounded-full hover:bg-gray-800 transition transform hover:scale-105 shadow-lg"
+           onClick={() => {setMode(mode === "timer" ? "stopwatch" : "timer");
+            
+            setTimeLeft(0)
+            setRunning(false)
+            console.log("In second");
+            
+           }}
+           className="px-6 py-3 bg-gray-700 text-white font-semibold rounded-full hover:bg-gray-800 transition transform hover:scale-105 shadow-lg mt-2"
          >
            Switch to {mode === "timer" ? "Stopwatch" : "Timer"}
          </button>
        </div>
-
-       {mode === "timer" && (
-         <button
-           onClick={handleSetTimer}
-           className="px-8 py-3 bg-blue-600 text-white font-semibold rounded-full hover:bg-blue-700 transition transform hover:scale-105 shadow-lg"
-         >
-           Set Timer
-         </button>
-       )}
      </div>
    );
 }

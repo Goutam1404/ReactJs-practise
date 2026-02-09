@@ -3,7 +3,7 @@ import { Link, NavLink } from "react-router-dom";
 
 function NavBar() {
   const isDark = true;
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const sections = [
     { id: "todo", label: "ToDo", icon: "✅" },
     { id: "notes", label: "Notes", icon: "📃" },
@@ -52,21 +52,21 @@ function NavBar() {
           {/* buttons */}
           <div className="hidden md:flex">
             <button
-              className="px-5 py-1 bg-gray-700 rounded-lg mr-2 text-white font-medium transition-all hover:bg-gray-900 cursor-pointer duration-200"
+              className="px-5 py-1 bg-gray-600 rounded-lg mr-2 text-white font-medium transition-all hover:bg-gray-800 cursor-pointer duration-200"
               onClick={handleAlert}
             >
               {isDark ? "☀" : "🌙"}
             </button>
             <Link
               to="#"
-              className="flex-1 py-3 text-center bg-blue-600 rounded-lg mr-2 text-white font-medium transition-all hover:bg-gray-900 cursor-pointer duration-200"
+              className="flex-1 py-3 px-4 text-center bg-blue-600 rounded-lg mr-2 text-white font-medium transition-all hover:bg-blue-800 cursor-pointer duration-200"
               onClick={handleAlert}
             >
               Login
             </Link>
             <Link
               to="#"
-              className="px-4 py-2 bg-gray-700 rounded-lg mr-2 text-white font-medium transition-all hover:bg-gray-900 cursor-pointer duration-200"
+              className="px-4 py-3 text-center bg-gray-600 rounded-lg mr-2 text-white font-medium transition-all hover:bg-gray-800 cursor-pointer duration-200"
               onClick={handleAlert}
             >
               Sign Up
@@ -110,15 +110,21 @@ function NavBar() {
             isDark ? "bg-[#0d1624] border-gray-800" : "bg-white border-gray-100"
           }`}
         >
-          <div className={`px-4 pt-2 pb-6 flex flex-col gap-4 border-t ${
+          <div
+            className={`px-4 pt-2 pb-6 flex flex-col gap-4 border-t ${
               isDark ? "border-gray-800" : "border-gray-100"
-            }`}>
+            }`}
+          >
             {sections.map((section) => (
               <NavLink
                 key={section.id}
                 to={section.id}
                 onClick={() => setIsOpen(false)} // Close menu on click
-                className="flex items-center px-4 py-3 rounded-lg bg-gray-800 text-gray-200"
+                className={({ isActive }) =>
+                  `flex items-center px-4 py-3 rounded-lg  hover:bg-gray-900 ${
+                    isActive ? "bg-gray-900" : "bg-gray-700"
+                  } text-gray-200`
+                }
               >
                 <span className="mr-4 text-xl">{section.icon}</span>
                 {section.label}
@@ -128,20 +134,22 @@ function NavBar() {
             <div className="flex flex-col gap-2 pt-4 border-t border-gray-700">
               <button
                 onClick={handleAlert}
-                className="w-full py-3 bg-gray-700 rounded-lg text-white"
+                className="w-full py-3 bg-gray-700 hover:bg-gray-800 rounded-lg text-white cursor-pointer"
               >
                 Toggle Theme {isDark ? "☀" : "🌙"}
               </button>
               <div className="flex gap-2">
                 <Link
                   to="#"
-                  className="flex-1 py-3 text-center bg-blue-600 rounded-lg text-white"
+                  className="flex-1 py-3 text-center bg-blue-600 hover:bg-blue-800 rounded-lg text-white"
+                  onClick={handleAlert}
                 >
                   Login
                 </Link>
                 <Link
                   to="#"
-                  className="flex-1 py-3 text-center bg-gray-700 rounded-lg text-white"
+                  className="flex-1 py-3 text-center bg-gray-700 hover:bg-gray-800 rounded-lg text-white"
+                  onClick={handleAlert}
                 >
                   Sign Up
                 </Link>
