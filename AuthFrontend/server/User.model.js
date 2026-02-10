@@ -1,24 +1,28 @@
 import mongoose, { model, Schema } from "mongoose";
-
-const UserSchema = new Schema(
+import bcrypt from "bcrypt";
+const AuthSchema = new Schema(
   {
     username: {
       type: String,
       required: true,
+      trim: true,
     },
     email: {
       type: String,
       required: true,
       unique: true,
+      trime: true,
     },
     password: {
       type: String,
-      required: true,
+      required: [true, "Password is required"],
       unique: true,
+      minlength:6,
+      trim: true,
     },
-    isVerified:{
-        type:Boolean,
-        default:false
+    isLoggedIn: {
+      type: Boolean,
+      default: false,
     },
   },
   {
@@ -26,6 +30,16 @@ const UserSchema = new Schema(
   }
 );
 
+AuthSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) {
+    return next();
+  }
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
+});
 
+AuthSchema.methods.isPasswordCorrect = async function (password) {
+  return await bcrypt.compare(password, this.password);
+};
 
-export const User = new model("User", UserSchema);
+export const Auth = new model("Auth", AuthSchema);
