@@ -17,7 +17,7 @@ const AuthSchema = new Schema(
       type: String,
       required: [true, "Password is required"],
       unique: true,
-      minlength:6,
+      minlength: 6,
       trim: true,
     },
     isLoggedIn: {
@@ -32,10 +32,10 @@ const AuthSchema = new Schema(
 
 AuthSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
-    return next();
+    return next;
   }
   this.password = await bcrypt.hash(this.password, 10);
-  next();
+  next;
 });
 
 AuthSchema.methods.isPasswordCorrect = async function (password) {
