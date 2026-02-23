@@ -3,19 +3,32 @@ import API from "../Api";
 export const AuthContext = createContext();
 
 export const AuthProvider = function ({ children }) {
-  const [user, setUser] = useState("");
-  const [loading, setLoading] = useState("");
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-// useEffect(() => {
-//   API.get("/me")
-//     .then((res) => setUser(res.data.user))
-//     .catch(() => setUser(null))
-//     .finally(() => setLoading(false));
-// }, []);
+useEffect(() => {
+  const verifyUser = async () => {
+    try {
+     
+      const res = await API.get("/me");
+      // console.log(res);
+      // console.log(res.data);
+      
+      setUser(res.data.user);
+      // console.log(user);
+      
+    } catch (err) {
+      setUser(null);
+    } finally {
+      setLoading(false); 
+    }
+  };
+  verifyUser();
+}, []);
+
   const login = async (email, password) => {
     try {
       console.log("Frontend call for user login");
-
       const { data } = await API.post("/login", { email, password });
       setUser(data);
     } catch (error) {
@@ -34,7 +47,7 @@ export const AuthProvider = function ({ children }) {
       });
       console.log({data});
     } catch (error) {
-      console.error("Error in sending data from frontend in register");
+      console.error("Error in sending data from frontend in register",error.message);
     }
   };
 

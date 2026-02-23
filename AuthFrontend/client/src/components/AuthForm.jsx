@@ -6,23 +6,29 @@ import { useAuth } from "../context/AuthContext";
 function AuthForm({ isLogin = false }) {
   // const {isLogin, setIsLogin} = useState(false);
   const navigate = useNavigate();
-  const {login, register}=useAuth()
+  const { login, register } = useAuth();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      if (!isLogin) {
-        await register(email, password);
+    if (!isLogin) {
+      try {
+        await register(username, email, password);
         alert("Success! Now please login.");
         navigate("/login");
-      } else {
+      } catch (err) {
+        alert(err.response?.data?.error || "Registration failed");
+      }
+    } else {
+      try {
         await login(email, password);
         alert("Logged in successfully!");
+        navigate("/dashboard");
+      } catch (err) {
+        alert(err.response?.data?.error || "Login failed");
       }
-    } catch (err) {
-      alert(err.response?.data?.error || isLogin?"Login failed":"Registration failed");
     }
   };
   return (
@@ -45,6 +51,7 @@ function AuthForm({ isLogin = false }) {
                 placeholder="Enter username"
                 onChange={(e) => setUsername(e.target.value)}
                 value={username}
+                required={true}
                 className="mt-1 w-full rounded-lg border border-gray-600 p-3 outline-none transition focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -58,6 +65,7 @@ function AuthForm({ isLogin = false }) {
               placeholder="Enter email"
               onChange={(e) => setEmail(e.target.value)}
               value={email}
+              required={true}
               className="mt-1 w-full rounded-lg border border-gray-600 p-3 outline-none transition focus:ring-2 focus:ring-blue-500"
             />
           </div>
@@ -70,6 +78,7 @@ function AuthForm({ isLogin = false }) {
               placeholder="Enter Password"
               onChange={(e) => setPassword(e.target.value)}
               value={password}
+              required={true}
               className="mt-1 w-full rounded-lg border border-gray-600 p-3 outline-none transition focus:ring-2 focus:ring-blue-500"
             />
           </div>
