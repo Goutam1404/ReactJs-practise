@@ -2,8 +2,10 @@ import { Auth } from "./User.model.js";
 import jwt from "jsonwebtoken";
 import transporter from "./nodemailer.js";
 
-const signToken = (userId) => {
-  return jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: "1d" });
+const signToken = (userId, email) => {
+  return jwt.sign({ userId, email }, process.env.JWT_SECRET, {
+    expiresIn: "1d",
+  });
 };
 
 const register = async (req, res) => {
@@ -81,7 +83,7 @@ const login = async (req, res) => {
         success: false,
       });
     }
-    const token = signToken(user._id);
+    const token = signToken(user._id, user.email);
 
     res.cookie("token", token, {
       httpOnly: true,
@@ -105,8 +107,8 @@ const login = async (req, res) => {
 const logout = async (req, res) => {
   try {
     console.log("App is listening in logout");
-    const {userId}=req.body
-    console.log("User ID from request:",userId); // <--- Check this!
+    const { userId } = req.body;
+    console.log("User ID from request:", userId); // <--- Check this!
 
     if (!userId) {
       return res.status(401).json({ message: "User ID not found in request" });
@@ -133,12 +135,11 @@ const sendOtp = async (req, res) => {
     const { userId } = req.body;
     const user = await Auth.findById(userId);
     console.log(userId);
-    
+
     if (!user) {
       return res.status(400).json({
         message: "User doesn't exists",
         success: false,
-        
       });
     }
     if (user.isAccountVerified) {
@@ -223,4 +224,117 @@ const verifyMail = async (req, res) => {
   }
 };
 
-export { register, login, logout, verifyMail, sendOtp };
+//password reset
+
+const sendResetOtp = async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "email is required",
+      });
+    }
+    const user = await Auth.findOne({ email });
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "User doesn't exists",
+      });
+    }
+    const otp = String(Math.floor(100000 + Math.random() * 900000));
+    user.resetOtp = otp;
+    user.resetOtpExpiry = Date.now() + 15 * 60 * 1000;
+    await user.save();
+
+    //sending OTP through mail
+    const mailOptions = {
+      from: process.env.SENDER_MAIL,
+      to: user.email,
+      subject: "Request for password reset",
+      text: ` Your OTP for password reset is : ${otp}`,
+    };
+    console.log(mailOptions);
+    await transporter.sendMail(mailOptions);
+    return res
+      .status(200)
+      .json({ success: true, message: "Verification OTP sent on Email" });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to send reset otp",
+    });
+  }
+};
+
+const resetPassword = async (req, res) => {
+  try {
+    const { email, otp, password } = req.body;
+    if (!email || !otp || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "All credentials is required (pass reset)",
+      });
+    }
+    const user = await Auth.findOne({ email });
+    if (
+      user.resetOtp === "" ||
+      Date.now() > user.resetOtpExpiry ||
+      user.resetOtp !== otp
+    ) {
+      return res.status(403).json({
+        success: false,
+        message: "Invalid OTP",
+      });
+    }
+
+    user.password = password;
+    user.resetOtp = "";
+    user.resetOtpExpiry = 0;
+    await user.save();
+    return res.status(200).json({
+      success: true,
+      message: "Successfully changed the password",
+      error: error.message,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to reset the password",
+    });
+  }
+};
+
+const userData = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    const user = await Auth.findById(userId);
+    if (!user)
+      return res
+        .status(401)
+        .json({
+          success: false,
+          message: "User not found",
+          error: error.message,
+        });
+
+    res.json({
+      userInfo: {
+        name: user.username,
+        accountVerified: user.isAccountVerified,
+      },
+    });
+  } catch (err) {
+    res.status(401).json({ message: "Invalid session" });
+  }
+};
+export {
+  register,
+  login,
+  logout,
+  verifyMail,
+  sendOtp,
+  sendResetOtp,
+  resetPassword,
+  userData,
+};
