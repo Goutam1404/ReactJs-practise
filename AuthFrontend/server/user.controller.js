@@ -25,24 +25,20 @@ const register = async (req, res) => {
         success: false,
       });
     }
-    try {
-      const mailOptions = {
-        from: process.env.SENDER_MAIL,
-        to: email,
-        subject: "email verification",
-        text: `Welcome to the auth working ${username}, Thank you for choosing us`,
-      };
-      console.log(mailOptions);
-      await transporter.sendMail(mailOptions);
-    } catch (error) {
-      return res.json({
-        message: "Error in mail",
-        error: error.message,
-      });
-    }
+
     const newUser = await Auth.create({ username, email, password });
     await newUser.save();
     console.log(newUser);
+
+    //sending verification OTP via mail to the user
+    const mailOptions = {
+      from: process.env.SENDER_MAIL,
+      to: email,
+      subject: "email verification",
+      text: `Welcome to the auth working ${username}, Thank you for choosing us`,
+    };
+    console.log(mailOptions);
+    await transporter.sendMail(mailOptions);
 
     return res.status(200).json({
       message: "User registered successfully",
@@ -109,9 +105,10 @@ const login = async (req, res) => {
 const logout = async (req, res) => {
   try {
     console.log("App is listening in logout");
-    console.log("User ID from request:", req.userId); // <--- Check this!
+    const {userId}=req.body
+    console.log("User ID from request:",userId); // <--- Check this!
 
-    if (!req.userId) {
+    if (!userId) {
       return res.status(401).json({ message: "User ID not found in request" });
     }
     res.clearCookie("token");
@@ -131,4 +128,99 @@ const logout = async (req, res) => {
   }
 };
 
-export { register, login, logout };
+const sendOtp = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    const user = await Auth.findById(userId);
+    console.log(userId);
+    
+    if (!user) {
+      return res.status(400).json({
+        message: "User doesn't exists",
+        success: false,
+        
+      });
+    }
+    if (user.isAccountVerified) {
+      return res.status(403).json({
+        message: "User already verified",
+      });
+    }
+    //creating OTP
+    const otp = String(Math.floor(100000 + Math.random() * 900000));
+    user.verifyOtp = otp;
+    user.verifyOtpExpiry = Date.now() + 24 * 60 * 60 * 1000;
+    await user.save();
+
+    //sending OTP through mail
+    const mailOptions = {
+      from: process.env.SENDER_MAIL,
+      to: user.email,
+      subject: "Account verification",
+      text: `Welcome to the auth working ${user.username}, Thank you for choosing us. Your OTP is : ${otp}`,
+    };
+    console.log(mailOptions);
+    await transporter.sendMail(mailOptions);
+    return res
+      .status(200)
+      .json({ success: true, message: "Verification OTP sent on Email" });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "User verification failed",
+      error: error.message,
+    });
+  }
+};
+
+const verifyMail = async (req, res) => {
+  try {
+    const { userId, otp } = req.body;
+
+    if (!userId || !otp) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing details",
+      });
+    }
+    const user = await Auth.findById(userId);
+    if (!user) {
+      return res.status(400).json({
+        message: "User doesn't exists",
+        success: false,
+      });
+    }
+
+    if (user.verifyOtp === "" || user.verifyOtp !== otp) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid OTP",
+        error: error.message,
+      });
+    }
+    if (user.verifyOtpExpiry < Date.now()) {
+      return res.status(401).json({
+        success: false,
+        message: "OTP expired",
+        error: error.message,
+      });
+    }
+
+    user.isAccountVerified = true;
+    user.verifyOtp = "";
+    user.verifyOtpExpiry = 0;
+
+    await user.save();
+    return res
+      .status(200)
+      .json({ success: true, message: "Email verified successfully" });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Issue in verifying mail",
+      error: error.message,
+    });
+  }
+};
+
+export { register, login, logout, verifyMail, sendOtp };
