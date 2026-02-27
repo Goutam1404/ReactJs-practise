@@ -17,8 +17,28 @@ const AuthSchema = new Schema(
       type: String,
       required: [true, "Password is required"],
       unique: true,
-      minlength: 6,
+      minlength: 5,
       trim: true,
+    },
+    verifyOtp:{
+      type:String,
+      default:''
+    },
+    verifyOtpExpiry:{
+      type:Number,
+      default:0
+    },
+    isAccountVerified:{
+      type:Boolean,
+      default:false
+    },
+    resetOtp:{
+      type:String,
+      default:''
+    },
+    resetOtpExpiry:{
+      type:Number,
+      default:0
     },
     isLoggedIn: {
       type: Boolean,

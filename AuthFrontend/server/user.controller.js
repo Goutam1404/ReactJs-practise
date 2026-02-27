@@ -1,5 +1,7 @@
 import { Auth } from "./User.model.js";
 import jwt from "jsonwebtoken";
+import transporter from "./nodemailer.js";
+
 const signToken = (userId) => {
   return jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: "1d" });
 };
@@ -7,8 +9,13 @@ const signToken = (userId) => {
 const register = async (req, res) => {
   try {
     const { username, email, password } = req.body;
+    if (!username || !email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "All the fields are required",
+      });
+    }
     console.log(username);
-
     const isUser = await Auth.findOne({ email });
     // console.log(isUser);
     // res.send("register route is listening");
@@ -18,7 +25,21 @@ const register = async (req, res) => {
         success: false,
       });
     }
-
+    try {
+      const mailOptions = {
+        from: process.env.SENDER_MAIL,
+        to: email,
+        subject: "email verification",
+        text: `Welcome to the auth working ${username}, Thank you for choosing us`,
+      };
+      console.log(mailOptions);
+      await transporter.sendMail(mailOptions);
+    } catch (error) {
+      return res.json({
+        message: "Error in mail",
+        error: error.message,
+      });
+    }
     const newUser = await Auth.create({ username, email, password });
     await newUser.save();
     console.log(newUser);
@@ -42,6 +63,13 @@ const login = async (req, res) => {
     const { email, password } = req.body;
     console.log("Listening login route");
 
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "All the fields are required",
+      });
+    }
+
     const user = await Auth.findOne({ email });
     console.log(user);
     if (!user) {
@@ -52,8 +80,8 @@ const login = async (req, res) => {
     }
     const isPassword = await user.isPasswordCorrect(password);
     if (!isPassword) {
-      return res.status(400).json({
-        message: "Given password is not correct",
+      return res.status(401).json({
+        message: "Password not correct",
         success: false,
       });
     }
@@ -65,7 +93,7 @@ const login = async (req, res) => {
       maxAge: 24 * 60 * 60 * 1000, // 1 day
     });
     user.isLoggedIn = true;
-    await user.save()
+    await user.save();
     return res.status(200).json({
       message: "User logged in successfully",
       user,
@@ -84,13 +112,15 @@ const logout = async (req, res) => {
     console.log("User ID from request:", req.userId); // <--- Check this!
 
     if (!req.userId) {
-        return res.status(401).json({ message: "User ID not found in request" });
+      return res.status(401).json({ message: "User ID not found in request" });
     }
     res.clearCookie("token");
     await Auth.findByIdAndUpdate(req.userId, {
       isLoggedIn: false,
     });
+
     return res.status(200).json({
+      success: true,
       message: "User logged out.",
     });
   } catch (error) {
