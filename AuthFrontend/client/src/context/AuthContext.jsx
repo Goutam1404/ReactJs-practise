@@ -1,38 +1,41 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import API from "../Api";
 export const AuthContext = createContext();
-
+import { toast } from "react-toastify";
 export const AuthProvider = function ({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-useEffect(() => {
-  const verifyUser = async () => {
-    try {
-     
-      const res = await API.get("/me");
-      // console.log(res);
-      // console.log(res.data);
-      
-      setUser(res.data.user);
-      // console.log(user);
-      
-    } catch (err) {
-      setUser(null);
-    } finally {
-      setLoading(false); 
-    }
-  };
-  verifyUser();
-}, []);
+  useEffect(() => {
+    const verifyUser = async () => {
+      try {
+        const res = await API.get("/me");
+        console.log(res.data);
+        
+        setUser(res.data.userInfo);
+      } catch (err) {
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+    verifyUser();
+  }, []);
 
   const login = async (email, password) => {
     try {
       console.log("Frontend call for user login");
       const { data } = await API.post("/login", { email, password });
-      setUser(data);
+
+      setUser(data.userInfo);
+      console.log(data);
+       toast.success("Logged in successfully!");
     } catch (error) {
-      console.error("Error in fetching data in login");
+      console.error("Error in fetching data in login", error);
+      const message =
+        error.response?.data?.message ||
+        "Login failed. Please check your credentials.";
+      toast.error(message);
     }
   };
 
@@ -45,9 +48,14 @@ useEffect(() => {
         email,
         password,
       });
-      console.log({data});
+      console.log({ data });
+      toast.success("User Registered, Success");
     } catch (error) {
-      console.error("Error in sending data from frontend in register",error.message);
+      console.error(
+        "Error in sending data from frontend in register",
+        error.message
+      );
+      toast.error(err.response?.data?.error || "Registration failed");
     }
   };
 
@@ -61,9 +69,13 @@ useEffect(() => {
     }
   };
 
-  const values={
-    login, register, logout, user, loading
-  }
+  const values = {
+    login,
+    register,
+    logout,
+    user,
+    loading,
+  };
   return (
     <AuthContext.Provider value={values}>
       {!loading && children}
@@ -71,4 +83,4 @@ useEffect(() => {
   );
 };
 
-export const useAuth = () => useContext(AuthContext)
+export const useAuth = () => useContext(AuthContext);

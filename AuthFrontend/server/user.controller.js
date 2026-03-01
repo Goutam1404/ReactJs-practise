@@ -81,6 +81,7 @@ const login = async (req, res) => {
       return res.status(401).json({
         message: "Password not correct",
         success: false,
+        // error:error.message
       });
     }
     const token = signToken(user._id, user.email);
@@ -88,18 +89,26 @@ const login = async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
       maxAge: 24 * 60 * 60 * 1000, // 1 day
     });
     user.isLoggedIn = true;
     await user.save();
     return res.status(200).json({
+      success: true,
       message: "User logged in successfully",
-      user,
+      userInfo: {
+        name: user.username,
+        email: user.email,
+        isAccountVerified: user.isAccountVerified,
+        isLoggedIn: user.isLoggedIn,
+      },
     });
   } catch (error) {
     return res.status(500).json({
+      success: false,
       message: "Error in login the user",
-      error: error.message,
+      error,
     });
   }
 };
@@ -107,10 +116,10 @@ const login = async (req, res) => {
 const logout = async (req, res) => {
   try {
     console.log("App is listening in logout");
-    const { userId } = req.body;
-    console.log("User ID from request:", userId); // <--- Check this!
 
-    if (!userId) {
+    console.log("User ID from request:", req.userId); // <--- Check this!
+
+    if (!req.userId) {
       return res.status(401).json({ message: "User ID not found in request" });
     }
     res.clearCookie("token");
@@ -132,9 +141,8 @@ const logout = async (req, res) => {
 
 const sendOtp = async (req, res) => {
   try {
-    const { userId } = req.body;
-    const user = await Auth.findById(userId);
-    console.log(userId);
+    const user = await Auth.findById(req.userId);
+    console.log(req.userId);
 
     if (!user) {
       return res.status(400).json({
@@ -176,15 +184,15 @@ const sendOtp = async (req, res) => {
 
 const verifyMail = async (req, res) => {
   try {
-    const { userId, otp } = req.body;
+    const { otp } = req.body;
 
-    if (!userId || !otp) {
+    if (!req.userId || !otp) {
       return res.status(400).json({
         success: false,
         message: "Missing details",
       });
     }
-    const user = await Auth.findById(userId);
+    const user = await Auth.findById(req.userId);
     if (!user) {
       return res.status(400).json({
         message: "User doesn't exists",
@@ -269,7 +277,8 @@ const sendResetOtp = async (req, res) => {
 
 const resetPassword = async (req, res) => {
   try {
-    const { email, otp, password } = req.body;
+    const { otp, password } = req.body;
+    const email = req.email;
     if (!email || !otp || !password) {
       return res.status(400).json({
         success: false,
@@ -295,33 +304,35 @@ const resetPassword = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Successfully changed the password",
-      error: error.message,
     });
   } catch (error) {
     return res.status(500).json({
       success: false,
       message: "Failed to reset the password",
+      error: error.message,
     });
   }
 };
 
 const userData = async (req, res) => {
   try {
-    const { userId } = req.body;
+    const userId = req.userId;
     const user = await Auth.findById(userId);
     if (!user)
-      return res
-        .status(401)
-        .json({
-          success: false,
-          message: "User not found",
-          error: error.message,
-        });
+      return res.status(401).json({
+        success: false,
+        message: "User not found",
+        error: error.message,
+      });
+    console.log("In me route", user);
 
-    res.json({
+    return res.json({
+      success: true,
       userInfo: {
         name: user.username,
-        accountVerified: user.isAccountVerified,
+        email: user.email,
+        isAccountVerified: user.isAccountVerified,
+        isLoggedIn: user.isLoggedIn,
       },
     });
   } catch (err) {

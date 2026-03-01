@@ -5,10 +5,14 @@ export function useAuth(req, res, next) {
   if (!token) return res.status(401).json({ message: "Not logged in" });
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.body.userId = decoded.userId;
-    req.body.email = decoded.email;
+    console.log("In auth middleware",decoded);
+    
+    req.userId = decoded.userId;
+    req.email = decoded.email;
     next();
   } catch (err) {
-    res.status(401).json({ message: "Invalid token" });
+    console.log("JWT verify error",err.message);
+    
+    return res.status(401).json({ message: "Invalid token", err:err.message });
   }
 }
