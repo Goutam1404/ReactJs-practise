@@ -185,7 +185,6 @@ const sendOtp = async (req, res) => {
 const verifyMail = async (req, res) => {
   try {
     const { otp } = req.body;
-
     if (!req.userId || !otp) {
       return res.status(400).json({
         success: false,

@@ -2,7 +2,9 @@ import { createContext, useContext, useEffect, useState } from "react";
 import API from "../Api";
 export const AuthContext = createContext();
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 export const AuthProvider = function ({ children }) {
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -10,8 +12,8 @@ export const AuthProvider = function ({ children }) {
     const verifyUser = async () => {
       try {
         const res = await API.get("/me");
-        console.log(res.data);
-        
+        // console.log("User", res.data.userInfo);
+
         setUser(res.data.userInfo);
       } catch (err) {
         setUser(null);
@@ -29,7 +31,7 @@ export const AuthProvider = function ({ children }) {
 
       setUser(data.userInfo);
       console.log(data);
-       toast.success("Logged in successfully!");
+      toast.success("Logged in successfully!");
     } catch (error) {
       console.error("Error in fetching data in login", error);
       const message =
@@ -66,6 +68,38 @@ export const AuthProvider = function ({ children }) {
       console.log("Frontend call for logout");
     } catch (error) {
       console.error("Error in frontend for logout");
+      toast.error(err.response?.data?.error || "Logout failed");
+    }
+  };
+
+  const sendOtp = async () => {
+    try {
+      await API.post("/send-verify-otp");
+      setTimeout(() => {
+        navigate("/email-verify");
+      }, 2000);
+      console.log("Frontend call for sending otp for email verification");
+      toast.success("OTP sent successfully");
+    } catch (error) {
+      console.error(
+        "Error in frontend for sending otp for email verification",
+        error
+      );
+      toast.error(err.response?.data?.error || "Failed to sent OTP");
+    }
+  };
+
+  const verifyOtp = async (otp) => {
+    try {
+      await API.post("/verify-account", { otp });
+      setTimeout(() => {
+        navigate("/home");
+      }, 2000);
+      console.log("Frontend call for email verification");
+      toast.success("User verified");
+    } catch (error) {
+      toast.error(error.response?.data?.error || "Failed to verify");
+      console.error("Error in frontend for email verification", error);
     }
   };
 
@@ -73,6 +107,8 @@ export const AuthProvider = function ({ children }) {
     login,
     register,
     logout,
+    sendOtp,
+    verifyOtp,
     user,
     loading,
   };
