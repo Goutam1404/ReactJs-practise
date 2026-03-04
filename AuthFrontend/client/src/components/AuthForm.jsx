@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -7,24 +7,50 @@ import { useAuth } from "../context/AuthContext";
 function AuthForm({ isLogin = false }) {
   // const {isLogin, setIsLogin} = useState(false);
   const navigate = useNavigate();
-  const { login, register } = useAuth();
+  const { user, login, register, resetPassOtp } = useAuth();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = async (e) => {
+    console.log("Handle submit function in authform");
+
     e.preventDefault();
     if (!isLogin) {
       await register(username, email, password);
       // alert("Success! Now please login.");
       navigate("/email-verify");
-      navigate("/login");
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
     } else {
-      await login(email, password);
-      navigate("/home");
+      try {
+        await login(email, password);
+        navigate("/home");
+        toast.success("Logged in successfully!");
+        navigate("/home");
+      } catch (error) {
+        console.error("Error in fetching data in login", error);
+        const message =
+          error.response?.data?.message ||
+          "Login failed. Please check your credentials.";
+        toast.error(message);
+        setEmail(email);
+        setPassword(password);
+      }
     }
   };
-  
+
+  // const handleResetPass = async () => {
+  //   // await resetPassOtp(email);
+  //   setTimeout(() => {
+  //     navigate("/reset-password", { state: { email } });
+  //   }, 3000);
+  // };
+
+  useEffect(() => {
+    user && navigate("/home");
+  }, [user]);
   return (
     <div className="min-h-screen bg-linear-to-br from-blue-200 to-neutral-400 flex items-center justify-center text-gray-400 p-4">
       <div className="w-full max-w-md rounded-2xl bg-gray-800 p-4 sm:p-6  shadow-2xl">
@@ -79,8 +105,9 @@ function AuthForm({ isLogin = false }) {
             />
             {isLogin ? (
               <p
-                className="text-indigo-500 mt-2 text-sm pl-2 cursor-pointer w-fit"
-                onClick={() => navigate("/reset-password")}
+                className={`text-indigo-500 mt-2 text-sm pl-2 cursor-pointer w-fit ${!email?"pointer-events-none cursor-default":""}`}
+           
+                onClick={() => resetPassOtp(email)}
               >
                 Forgot Password ?
               </p>

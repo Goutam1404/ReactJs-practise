@@ -1,12 +1,15 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import NavBar from '../components/NavBar';
 import { useAuth } from '../context/AuthContext';
 
 function Home() {
-   const { user, logout, loading } = useAuth();
+   const { user, loading } = useAuth();
     // console.log(user.user.username);
     console.log(user.name);
     
+      // useEffect(() => {
+      //    !user && navigate("/login");
+      // }, [user]);
     return (
       <div className="min-h-screen bg-gray-950 flex flex-col items-center justify-center p-4">
         {loading ? (

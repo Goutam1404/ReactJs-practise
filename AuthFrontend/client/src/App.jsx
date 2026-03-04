@@ -1,12 +1,13 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-  import { ToastContainer } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import AuthForm from "./components/AuthForm.jsx";
 import { AuthProvider, useAuth } from "./context/AuthContext.jsx";
 import Home from "./pages/Home.jsx";
 import ResetPassword from "./pages/ResetPassword.jsx";
 import EmailVerify from "./pages/EmailVerify.jsx";
 import LandingPage from "./pages/LandingPage.jsx";
+import Layout from "./Layout.jsx";
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -49,7 +50,7 @@ const Dashboard = () => {
 function App() {
   return (
     <AuthProvider>
-      <ToastContainer/>
+      <ToastContainer />
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route
@@ -69,15 +70,23 @@ function App() {
           }
         />
         <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/email-verify" element={<EmailVerify />} />
         <Route
-          path="/home"
           element={
             <ProtectedRoute>
-              <Home />
+              <Layout />
             </ProtectedRoute>
           }
-        />
+        >
+          <Route path="/email-verify" element={<EmailVerify />} />
+          <Route
+            path="/home"
+            element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            }
+          />
+        </Route>
       </Routes>
     </AuthProvider>
   );

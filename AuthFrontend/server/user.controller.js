@@ -69,21 +69,23 @@ const login = async (req, res) => {
     }
 
     const user = await Auth.findOne({ email });
-    console.log(user);
     if (!user) {
       return res.status(400).json({
-        message: "User doesn't exists",
+        message: "User with these email doesn't exists",
         success: false,
       });
     }
     const isPassword = await user.isPasswordCorrect(password);
     if (!isPassword) {
+      console.log("Password incorrect");
+      
       return res.status(401).json({
         message: "Password not correct",
         success: false,
         // error:error.message
       });
     }
+    console.log(user);
     const token = signToken(user._id, user.email);
 
     res.cookie("token", token, {
@@ -158,7 +160,7 @@ const sendOtp = async (req, res) => {
     //creating OTP
     const otp = String(Math.floor(100000 + Math.random() * 900000));
     user.verifyOtp = otp;
-    user.verifyOtpExpiry = Date.now() + 24 * 60 * 60 * 1000;
+    user.verifyOtpExpiry = Date.now() + 15 * 60 * 1000;
     await user.save();
 
     //sending OTP through mail
@@ -166,7 +168,10 @@ const sendOtp = async (req, res) => {
       from: process.env.SENDER_MAIL,
       to: user.email,
       subject: "Account verification",
-      text: `Welcome to the auth working ${user.username}, Thank you for choosing us. Your OTP is : ${otp}`,
+      text: `Welcome to the auth working ${user.username}, Thank you for choosing us. Your OTP is : ${otp}
+            OTP expires in 15 minutes
+      `,
+
     };
     console.log(mailOptions);
     await transporter.sendMail(mailOptions);
@@ -231,6 +236,7 @@ const verifyMail = async (req, res) => {
   }
 };
 
+
 //password reset
 
 const sendResetOtp = async (req, res) => {
@@ -259,7 +265,9 @@ const sendResetOtp = async (req, res) => {
       from: process.env.SENDER_MAIL,
       to: user.email,
       subject: "Request for password reset",
-      text: ` Your OTP for password reset is : ${otp}`,
+      text: ` Your OTP for password reset is : ${otp},
+            OTP expires in next 15 minutes.
+      `,
     };
     console.log(mailOptions);
     await transporter.sendMail(mailOptions);
@@ -276,8 +284,10 @@ const sendResetOtp = async (req, res) => {
 
 const resetPassword = async (req, res) => {
   try {
-    const { otp, password } = req.body;
-    const email = req.email;
+    const { email,otp, password } = req.body;
+    console.log(`Email:${email} otp:${otp} password:${password}`);
+    
+    // const email = req.email;
     if (!email || !otp || !password) {
       return res.status(400).json({
         success: false,
